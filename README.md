@@ -101,7 +101,3 @@ Class | Method | HTTP request | Description
  - [DaDaPushClient::Object::ResultOfMessagePushResponse](docs/ResultOfMessagePushResponse.md)
  - [DaDaPushClient::Object::ResultOfPageResponseOfMessageObject](docs/ResultOfPageResponseOfMessageObject.md)
 
-
-# DOCUMENTATION FOR AUTHORIZATION
- All endpoints do not require authorization.
-
