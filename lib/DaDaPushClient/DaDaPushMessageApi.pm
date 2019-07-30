@@ -22,12 +22,13 @@ package DaDaPushClient::DaDaPushMessageApi;
 require 5.6.0;
 use strict;
 use warnings;
-use utf8; 
+use utf8;
 use Exporter;
-use Carp qw( croak );
+use Carp qw(croak);
 use Log::Any qw($log);
 
 use DaDaPushClient::ApiClient;
+use Class::Data::Inheritable;
 
 use base "Class::Data::Inheritable";
 
@@ -37,9 +38,10 @@ sub new {
     my $class = shift;
     my $api_client;
 
-    if ($_[0] && ref $_[0] && ref $_[0] eq 'DaDaPushClient::ApiClient' ) {
+    if ($_[0] && ref $_[0] && ref $_[0] eq 'DaDaPushClient::ApiClient') {
         $api_client = $_[0];
-    } else {
+    }
+    else {
         $api_client = DaDaPushClient::ApiClient->new(@_);
     }
 
@@ -57,22 +59,22 @@ sub new {
 # @param string $x_channel_token see: https://www.dadapush.com/channel/list (optional)
 {
     my $params = {
-    'body' => {
-        data_type => 'MessagePushRequest',
-        description => 'body',
-        required => '1',
-    },
-    'x_channel_token' => {
-        data_type => 'string',
-        description => 'see: https://www.dadapush.com/channel/list',
-        required => '0',
-    },
+        'body'            => {
+            data_type   => 'MessagePushRequest',
+            description => 'body',
+            required    => '1',
+        },
+        'x_channel_token' => {
+            data_type   => 'string',
+            description => 'see: https://www.dadapush.com/channel/list',
+            required    => '0',
+        },
     };
-    __PACKAGE__->method_documentation->{ 'create_message' } = { 
+    __PACKAGE__->method_documentation->{ 'create_message' } = {
         summary => 'push Message to a Channel',
-        params => $params,
+        params  => $params,
         returns => 'ResultOfMessagePushResponse',
-        };
+    };
 }
 # @return ResultOfMessagePushResponse
 #
@@ -81,7 +83,10 @@ sub create_message {
 
     # verify the required parameter 'body' is set
     unless (exists $args{'body'}) {
-      croak("Missing the required parameter 'body' when calling create_message");
+        croak("Missing the required parameter 'body' when calling create_message");
+    }
+    unless (exists $args{'channel_token'}) {
+        croak("Missing the required parameter 'channel_token' when calling create_message");
     }
 
     # parse inputs
@@ -99,24 +104,21 @@ sub create_message {
     }
     $header_params->{'Content-Type'} = $self->{api_client}->select_header_content_type('application/json');
 
-    # header params
-    if ( exists $args{'x_channel_token'}) {
-        $header_params->{'x-channel-token'} = $self->{api_client}->to_header_value($args{'x_channel_token'});
-    }
+    $header_params->{'x-channel-token'} = $self->{api_client}->to_header_value($args{'channel_token'});
 
     my $_body_data;
     # body params
-    if ( exists $args{'body'}) {
+    if (exists $args{'body'}) {
         $_body_data = $args{'body'};
     }
 
     # authentication setting, if any
-    my $auth_settings = [qw()];
+    my $auth_settings = [ qw() ];
 
     # make the API Call
     my $response = $self->{api_client}->call_api($_resource_path, $_method,
-                                           $query_params, $form_params,
-                                           $header_params, $_body_data, $auth_settings);
+        $query_params, $form_params,
+        $header_params, $_body_data, $auth_settings);
     if (!$response) {
         return;
     }
@@ -133,22 +135,22 @@ sub create_message {
 # @param string $x_channel_token see: https://www.dadapush.com/channel/list (optional)
 {
     my $params = {
-    'message_id' => {
-        data_type => 'int',
-        description => 'messageId',
-        required => '1',
-    },
-    'x_channel_token' => {
-        data_type => 'string',
-        description => 'see: https://www.dadapush.com/channel/list',
-        required => '0',
-    },
+        'message_id'      => {
+            data_type   => 'int',
+            description => 'messageId',
+            required    => '1',
+        },
+        'x_channel_token' => {
+            data_type   => 'string',
+            description => 'see: https://www.dadapush.com/channel/list',
+            required    => '0',
+        },
     };
-    __PACKAGE__->method_documentation->{ 'delete_message' } = { 
+    __PACKAGE__->method_documentation->{ 'delete_message' } = {
         summary => 'delete a Channel Message',
-        params => $params,
+        params  => $params,
         returns => 'Result',
-        };
+    };
 }
 # @return Result
 #
@@ -157,7 +159,10 @@ sub delete_message {
 
     # verify the required parameter 'message_id' is set
     unless (exists $args{'message_id'}) {
-      croak("Missing the required parameter 'message_id' when calling delete_message");
+        croak("Missing the required parameter 'message_id' when calling delete_message");
+    }
+    unless (exists $args{'channel_token'}) {
+        croak("Missing the required parameter 'channel_token' when calling delete_message");
     }
 
     # parse inputs
@@ -176,12 +181,10 @@ sub delete_message {
     $header_params->{'Content-Type'} = $self->{api_client}->select_header_content_type();
 
     # header params
-    if ( exists $args{'x_channel_token'}) {
-        $header_params->{'x-channel-token'} = $self->{api_client}->to_header_value($args{'x_channel_token'});
-    }
+    $header_params->{'x-channel-token'} = $self->{api_client}->to_header_value($args{'channel_token'});
 
     # path params
-    if ( exists $args{'message_id'}) {
+    if (exists $args{'message_id'}) {
         my $_base_variable = "{" . "messageId" . "}";
         my $_base_value = $self->{api_client}->to_path_value($args{'message_id'});
         $_resource_path =~ s/$_base_variable/$_base_value/g;
@@ -189,12 +192,12 @@ sub delete_message {
 
     my $_body_data;
     # authentication setting, if any
-    my $auth_settings = [qw()];
+    my $auth_settings = [ qw() ];
 
     # make the API Call
     my $response = $self->{api_client}->call_api($_resource_path, $_method,
-                                           $query_params, $form_params,
-                                           $header_params, $_body_data, $auth_settings);
+        $query_params, $form_params,
+        $header_params, $_body_data, $auth_settings);
     if (!$response) {
         return;
     }
@@ -211,22 +214,22 @@ sub delete_message {
 # @param string $x_channel_token see: https://www.dadapush.com/channel/list (optional)
 {
     my $params = {
-    'message_id' => {
-        data_type => 'int',
-        description => 'messageId',
-        required => '1',
-    },
-    'x_channel_token' => {
-        data_type => 'string',
-        description => 'see: https://www.dadapush.com/channel/list',
-        required => '0',
-    },
+        'message_id'      => {
+            data_type   => 'int',
+            description => 'messageId',
+            required    => '1',
+        },
+        'x_channel_token' => {
+            data_type   => 'string',
+            description => 'see: https://www.dadapush.com/channel/list',
+            required    => '0',
+        },
     };
-    __PACKAGE__->method_documentation->{ 'get_message' } = { 
+    __PACKAGE__->method_documentation->{ 'get_message' } = {
         summary => 'get a Channel Message',
-        params => $params,
+        params  => $params,
         returns => 'ResultOfMessageObject',
-        };
+    };
 }
 # @return ResultOfMessageObject
 #
@@ -235,7 +238,10 @@ sub get_message {
 
     # verify the required parameter 'message_id' is set
     unless (exists $args{'message_id'}) {
-      croak("Missing the required parameter 'message_id' when calling get_message");
+        croak("Missing the required parameter 'message_id' when calling get_message");
+    }
+    unless (exists $args{'channel_token'}) {
+        croak("Missing the required parameter 'channel_token' when calling get_message");
     }
 
     # parse inputs
@@ -254,12 +260,10 @@ sub get_message {
     $header_params->{'Content-Type'} = $self->{api_client}->select_header_content_type();
 
     # header params
-    if ( exists $args{'x_channel_token'}) {
-        $header_params->{'x-channel-token'} = $self->{api_client}->to_header_value($args{'x_channel_token'});
-    }
+    $header_params->{'x-channel-token'} = $self->{api_client}->to_header_value($args{'channel_token'});
 
     # path params
-    if ( exists $args{'message_id'}) {
+    if (exists $args{'message_id'}) {
         my $_base_variable = "{" . "messageId" . "}";
         my $_base_value = $self->{api_client}->to_path_value($args{'message_id'});
         $_resource_path =~ s/$_base_variable/$_base_value/g;
@@ -267,12 +271,12 @@ sub get_message {
 
     my $_body_data;
     # authentication setting, if any
-    my $auth_settings = [qw()];
+    my $auth_settings = [ qw() ];
 
     # make the API Call
     my $response = $self->{api_client}->call_api($_resource_path, $_method,
-                                           $query_params, $form_params,
-                                           $header_params, $_body_data, $auth_settings);
+        $query_params, $form_params,
+        $header_params, $_body_data, $auth_settings);
     if (!$response) {
         return;
     }
@@ -290,27 +294,27 @@ sub get_message {
 # @param string $x_channel_token see: https://www.dadapush.com/channel/list (optional)
 {
     my $params = {
-    'page' => {
-        data_type => 'int',
-        description => 'greater than 1',
-        required => '1',
-    },
-    'page_size' => {
-        data_type => 'int',
-        description => 'range is 1,50',
-        required => '1',
-    },
-    'x_channel_token' => {
-        data_type => 'string',
-        description => 'see: https://www.dadapush.com/channel/list',
-        required => '0',
-    },
+        'page'            => {
+            data_type   => 'int',
+            description => 'greater than 1',
+            required    => '1',
+        },
+        'page_size'       => {
+            data_type   => 'int',
+            description => 'range is 1,50',
+            required    => '1',
+        },
+        'x_channel_token' => {
+            data_type   => 'string',
+            description => 'see: https://www.dadapush.com/channel/list',
+            required    => '0',
+        },
     };
-    __PACKAGE__->method_documentation->{ 'get_messages' } = { 
+    __PACKAGE__->method_documentation->{ 'get_messages' } = {
         summary => 'get Message List',
-        params => $params,
+        params  => $params,
         returns => 'ResultOfPageResponseOfMessageObject',
-        };
+    };
 }
 # @return ResultOfPageResponseOfMessageObject
 #
@@ -319,12 +323,15 @@ sub get_messages {
 
     # verify the required parameter 'page' is set
     unless (exists $args{'page'}) {
-      croak("Missing the required parameter 'page' when calling get_messages");
+        croak("Missing the required parameter 'page' when calling get_messages");
     }
 
     # verify the required parameter 'page_size' is set
     unless (exists $args{'page_size'}) {
-      croak("Missing the required parameter 'page_size' when calling get_messages");
+        croak("Missing the required parameter 'page_size' when calling get_messages");
+    }
+    unless (exists $args{'channel_token'}) {
+        croak("Missing the required parameter 'channel_token' when calling get_messages");
     }
 
     # parse inputs
@@ -343,28 +350,26 @@ sub get_messages {
     $header_params->{'Content-Type'} = $self->{api_client}->select_header_content_type();
 
     # query params
-    if ( exists $args{'page'}) {
+    if (exists $args{'page'}) {
         $query_params->{'page'} = $self->{api_client}->to_query_value($args{'page'});
     }
 
     # query params
-    if ( exists $args{'page_size'}) {
+    if (exists $args{'page_size'}) {
         $query_params->{'pageSize'} = $self->{api_client}->to_query_value($args{'page_size'});
     }
 
     # header params
-    if ( exists $args{'x_channel_token'}) {
-        $header_params->{'x-channel-token'} = $self->{api_client}->to_header_value($args{'x_channel_token'});
-    }
+    $header_params->{'x-channel-token'} = $self->{api_client}->to_header_value($args{'channel_token'});
 
     my $_body_data;
     # authentication setting, if any
-    my $auth_settings = [qw()];
+    my $auth_settings = [ qw() ];
 
     # make the API Call
     my $response = $self->{api_client}->call_api($_resource_path, $_method,
-                                           $query_params, $form_params,
-                                           $header_params, $_body_data, $auth_settings);
+        $query_params, $form_params,
+        $header_params, $_body_data, $auth_settings);
     if (!$response) {
         return;
     }

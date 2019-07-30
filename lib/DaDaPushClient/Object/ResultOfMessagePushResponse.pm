@@ -29,7 +29,8 @@ use Module::Runtime qw(use_module);
 use Log::Any qw($log);
 use Date::Parse;
 use DateTime;
-
+use Class::Accessor;
+use Class::Data::Inheritable;
 use DaDaPushClient::Object::MessagePushResponse;
 
 use base ("Class::Accessor", "Class::Data::Inheritable");

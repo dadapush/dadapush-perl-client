@@ -31,7 +31,8 @@ use Date::Parse;
 use DateTime;
 
 use DaDaPushClient::Object::PageResponseOfMessageObject;
-
+use Class::Accessor;
+use Class::Data::Inheritable;
 use base ("Class::Accessor", "Class::Data::Inheritable");
 
 #
